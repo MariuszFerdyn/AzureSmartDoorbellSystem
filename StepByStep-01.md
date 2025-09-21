@@ -37,6 +37,12 @@ sudo chown -R $USER:$USER /opt/AzureSmartDoorbellSystem
 To enable your camera module, run:
 ```
 sudo modprobe bcm2835-v4l2
+
+# Test camera detection
+v4l2-ctl --list-devices
+
+# Test camera capture
+v4l2-ctl --device=/dev/video0 --list-formats-ext
 ```
 
 ### Install Motion Service
