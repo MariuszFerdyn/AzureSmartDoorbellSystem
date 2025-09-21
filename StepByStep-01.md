@@ -76,7 +76,7 @@ sudo chown motion:motion /var/log/motion/motion.log
 
 
 ### Configure Motion Software
-
+```
 Edit the main configuration file /etc/motion/motion.conf it should look like:
 ```
 #daemon on
