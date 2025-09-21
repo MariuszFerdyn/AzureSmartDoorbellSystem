@@ -161,8 +161,9 @@ sudo apt install libffi-dev python3-dev python3-pip openssl
 Once the prerequisites are installed, use the official Microsoft script to install the Azure CLI:
 
 ```
-curl -L https://aka.ms/InstallAzureCli | bash
+sudo curl -L https://aka.ms/InstallAzureCli | bash
 ```
+
 
 ### Create an Azure Storage Account and Blob Container
 
@@ -170,7 +171,7 @@ curl -L https://aka.ms/InstallAzureCli | bash
     ```
     az login
     ```
-
+Install in /opt/azure-cli directory </br>
 2. Create a resource group:
     ```
     az group create --name <resource-group> --location <location>
