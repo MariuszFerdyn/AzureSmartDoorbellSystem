@@ -158,7 +158,7 @@ Run the following commands to ensure all prerequisites are installed:
 sudo apt install libffi-dev python3-dev python3-pip openssl
 ```
 
-Once the prerequisites are installed, use the official Microsoft script to install the Azure CLI:
+Once the prerequisites are installed, use the official Microsoft script to install the Azure CLI (install in /opt/azure-cli):
 
 ```
 sudo curl -L https://aka.ms/InstallAzureCli | bash
