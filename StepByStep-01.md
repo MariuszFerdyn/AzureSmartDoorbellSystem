@@ -77,83 +77,50 @@ sudo chown motion:motion /var/log/motion/motion.log
 
 ### Configure Motion Software
 
-Edit the main configuration file it should look like:
+Edit the main configuration file /etc/motion/motion.conf it should look like:
 ```
-sudo nano /etc/motion/motion.conf
-```
-Make the following changes:
-- `daemon = ON`
-- `webcam_localhost = OFF`
-- `webcam_port = 8088
-- `control_port = 8089`
+#daemon on
+process_id_file /tmp/motion.pid
 
-To ensure the Motion service starts as a daemon, edit:
-```
-sudo nano /etc/default/motion
-```
-Change:
-- `start_motion_daemon=yes`
+# Basic camera settings - TESTED WORKING
+videodevice /dev/video0
+width 1280
+height 720
+framerate 12
+#v4l2_palette 8
 
-Restart the Motion service:
-```
-sudo service motion restart
-```
+# Output settings
+output_pictures off
 
-### Viewing and Controlling the Camera
+# Stream settings - IMPORTANT: Allow external access
+stream_port 8081
+stream_localhost off
+stream_quality 75
+stream_maxrate 10
 
-Open a browser on another computer on the same network and view the feed:
-```
-http://<your Raspi Address>:8088
-```
+# Web control - IMPORTANT: Allow external access
+webcontrol_port 8080
+webcontrol_localhost off
+webcontrol_html_output on
 
-Remotely control webcam settings:
-```
-http://<your Raspi Address>:8089
-```
+# Log settings
+log_level 6
+log_type all
+logfile /var/log/motion/motion.log
 
-### Reconfigure the Motion software to automatically detect motion and save files to a specified path
-
-Here are relevant excerpts of Motion’s config file at `/etc/motion/motion.conf`, with some notes. Modify the file changing parameters rather than control-c/v.
-
-```conf
-# >>> Change this to "off" because systemd starts this service
-# daemon off
+# Optional: Add authentication for security
+# stream_authentication username:password
+# webcontrol_authentication username:password
 
 # >>> Make sure the `motion` group has write access - first create directory using mkdir /videos
 target_dir /videos
 
-# >>> This was where my webcam mounted, but may not be for you.
-video_device /dev/video0
-
-############################################################
-# Image Processing configuration parameters
-############################################################
-
-width 1280
-height 720
-framerate 30
-
-############################################################
-# Motion detection configuration parameters
-############################################################
-
-# >>> I tweaked these, may tweak more... the docs are good
+# Detect movment
 threshold 600
 minimum_motion_frames 3
 event_gap 15
 pre_capture 5
 post_capture 60
-
-############################################################
-# Script execution configuration parameters
-############################################################
-
-# >>> See above!
-on_event_start
-
-# >>> Explained below; handles Stream and Webhook #2
-#     "%f" is a placeholder for the full path to the mp4
-on_movie_end /opt/AzureSmartDoorbellSystem/VideoUpload.sh %f >> /videos/on_movie_end.log 2>&1
 
 ############################################################
 # Movie output configuration parameters
@@ -164,6 +131,24 @@ movie_max_time 600
 movie_quality 80
 movie_codec mp4
 ```
+
+Restart the Motion service:
+```
+sudo service motion restart
+```
+
+### Viewing and Controlling the Camera
+
+Open a browser on another computer on the same network and view the feed:
+```
+http://your Raspi IP Address:8081
+```
+
+Remotely control webcam settings:
+```
+http://your Raspi IP Address:8080
+```
+
 
 ### Install Azure CLI for Uploading Videos to Azure
 
@@ -229,6 +214,22 @@ sudo chmod +x /opt/AzureSmartDoorbellSystem/VideoUpload.sh
 ```
 
 Edit `/opt/AzureSmartDoorbellSystem/VideoUpload.sh` and replace the placeholders `<storage-account>` and `<your_sas_token>` with your actual storage account name and the SAS token you generated above.
+
+
+8. Add the following lines to the /etc/motion/motion.conf
+
+```
+on_event_start
+
+# >>> Explained below; handles Stream and Webhook #2
+#     "%f" is a placeholder for the full path to the mp4
+on_movie_end /opt/AzureSmartDoorbellSystem/VideoUpload.sh %f >> /videos/on_movie_end.log 2>&1
+```
+
+Execute:
+```
+sudo service motion restart
+```
 
 ***For now, all new videos should be uploaded to your Storage Account.***
 
