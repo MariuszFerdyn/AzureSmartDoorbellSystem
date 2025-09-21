@@ -161,7 +161,24 @@ sudo apt install libffi-dev python3-dev python3-pip openssl
 Once the prerequisites are installed, use the official Microsoft script to install the Azure CLI (install in /opt/azure-cli):
 
 ```
-sudo curl -L https://aka.ms/InstallAzureCli | bash
+# Update package list
+sudo apt update
+
+# Install required packages
+sudo apt install ca-certificates curl apt-transport-https lsb-release gnupg
+
+# Add Microsoft GPG key
+curl -sL https://packages.microsoft.com/keys/microsoft.asc | \
+    gpg --dearmor | \
+    sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
+
+# Add Azure CLI repository
+echo "deb [arch=arm64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" | \
+    sudo tee /etc/apt/sources.list.d/azure-cli.list
+
+# Update and install
+sudo apt update
+sudo apt install azure-cli
 ```
 
 
@@ -169,7 +186,7 @@ sudo curl -L https://aka.ms/InstallAzureCli | bash
 
 1. Sign in to your Azure account:
     ```
-    az login
+    az login --use-device-code
     ```
 Install in /opt/azure-cli directory </br>
 2. Create a resource group:
