@@ -54,9 +54,9 @@ Install Motion:
 sudo apt install motion
 ```
 
-Configury system for motion:
+### Configury system for motion:
 ```
-# Enable camera if disabled
+# Enable camera
 sudo raspi-config nonint do_camera 0
 
 # Create motion directories with proper permissions
