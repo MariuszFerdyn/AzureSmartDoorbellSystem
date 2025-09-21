@@ -152,33 +152,20 @@ http://your Raspi IP Address:8080
 
 ### Install Azure CLI for Uploading Videos to Azure
 
-Run the following commands to ensure all prerequisites are installed:
-
 ```
-sudo apt install libffi-dev python3-dev python3-pip openssl
-```
+sudo apt install python3 python3-venv --yes
 
-Once the prerequisites are installed, use the official Microsoft script to install the Azure CLI (install in /opt/azure-cli):
+# Create a virtual environment
+python3 -m venv azure-cli-env
 
-```
-# Update package list
-sudo apt update
+# Update pip
+azure-cli-env/bin/python -m pip install --upgrade pip
 
-# Install required packages
-sudo apt install ca-certificates curl apt-transport-https lsb-release gnupg
+# Install azure-cli
+azure-cli-env/bin/python -m pip install azure-cli
 
-# Add Microsoft GPG key
-curl -sL https://packages.microsoft.com/keys/microsoft.asc | \
-    gpg --dearmor | \
-    sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
-
-# Add Azure CLI repository
-echo "deb [arch=arm64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" | \
-    sudo tee /etc/apt/sources.list.d/azure-cli.list
-
-# Update and install
-sudo apt update
-sudo apt install azure-cli
+# Run any Azure CLI commands
+azure-cli-env/bin/az --version 
 ```
 
 
@@ -186,33 +173,33 @@ sudo apt install azure-cli
 
 1. Sign in to your Azure account:
     ```
-    az login --use-device-code
+    azure-cli-env/bin/az login --use-device-code
     ```
 Install in /opt/azure-cli directory </br>
 2. Create a resource group:
     ```
-    az group create --name <resource-group> --location <location>
+    azure-cli-env/bin/az group create --name <resource-group> --location <location>
     ```
 
 3. Create a storage account:
     ```
-    az storage account create --name <storage-account> --resource-group <resource-group> --location <location> --sku Standard_ZRS --encryption-services blob
+    azure-cli-env/bin/az storage account create --name <storage-account> --resource-group <resource-group> --location <location> --sku Standard_ZRS --encryption-services blob
     ```
 
 4. Assign yourself the Storage Blob Data Contributor role:
     ```
-    az ad signed-in-user show --query id -o tsv | az role assignment create --role "Storage Blob Data Contributor" --assignee @- --scope "/subscriptions/<subscription>/resourceGroups/<resource-group>/providers/Microsoft.Storage/storageAccounts/<storage-account>"
+    azure-cli-env/bin/az ad signed-in-user show --query id -o tsv | az role assignment create --role "Storage Blob Data Contributor" --assignee @- --scope "/subscriptions/<subscription>/resourceGroups/<resource-group>/providers/Microsoft.Storage/storageAccounts/<storage-account>"
     ```
 
 5. Create a blob container:
     ```
-    az storage container create --account-name <storage-account> --name videos --auth-mode login
+    azure-cli-env/bin/az storage container create --account-name <storage-account> --name videos --auth-mode login
     ```
 
 6. Create and display a SAS token that allows you to upload files only to the `videos` container in your storage account:
 
 ```
-az storage container generate-sas \
+azure-cli-env/bin/az storage container generate-sas \
   --account-name <storage-account> \
   --name videos \
   --permissions w \
