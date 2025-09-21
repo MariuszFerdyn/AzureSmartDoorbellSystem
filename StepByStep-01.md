@@ -56,8 +56,8 @@ sudo raspi-config nonint do_camera 0
 # Create motion directories with proper permissions
 sudo mkdir -p /var/lib/motion
 sudo mkdir -p /var/log/motion
-sudo mkdir -p /video
-sudo chown motion:motion /video
+sudo mkdir -p /videos
+sudo chown motion:motion /videos
 sudo chown motion:motion /var/lib/motion
 sudo chown motion:motion /var/log/motion
 sudo chmod 755 /var/lib/motion
