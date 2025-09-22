@@ -8,6 +8,7 @@ VIDEO_FILE="$1"
 STORAGE_ACCOUNT="<storage-account>"
 CONTAINER="videos"
 SAS_TOKEN="<your_sas_token>"
+source /opt/azure-cli-env/bin/activate
 
 if [ -z "$VIDEO_FILE" ]; then
   echo "No video file specified."
@@ -20,7 +21,7 @@ if [ ! -f "$VIDEO_FILE" ]; then
 fi
 
 # Upload the file to Azure Blob Storage
-az storage blob upload \
+az  storage blob upload \
   --account-name "$STORAGE_ACCOUNT" \
   --container-name "$CONTAINER" \
   --name "$(basename "$VIDEO_FILE")" \
@@ -32,4 +33,3 @@ if [ $? -eq 0 ]; then
   echo "Upload successful: $VIDEO_FILE"
 else
   echo "Upload failed: $VIDEO_FILE"
-fi
