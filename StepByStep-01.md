@@ -155,7 +155,10 @@ http://your Raspi IP Address:8080
 ```
 sudo apt install python3 python3-venv --yes
 
-# Create a virtual environment
+# Create a virtual environment but in motion user
+sudo chmod 777 /opt
+sudo -u motion bash
+
 python3 -m venv azure-cli-env
 
 # Update pip
